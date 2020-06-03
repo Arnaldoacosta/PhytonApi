@@ -3,23 +3,20 @@ from flask import jsonify
 import json
 from controller import Response
 from flask_api import FlaskAPI, status
-from Servicio.Exception_api import ApiExceptionServ,NotFound
+from Servicio.Exception_api import ApiExceptionServ,NotFound,InternalServerError
 import requests
-from Servicio.const import runTest
+from Servicio.Errores_internos import CodeInternalError
 
 
 #add notaMateria
 def addNotaMateria(request): 
+    notamateria=setNotaMateria(request)
     try:
-        notamateria=NotaMateria(
-        request.json['alumno_id'],
-        request.json['nombremateria'],
-        request.json['notafinal'] 
-        )
+        notamateria.save()
         content = {'detalle': 'Recurso creado.'}
-        return content, status.HTTP_201_CREATED  
+        return content, status.HTTP_201_CREATED 
     except Exception as identifier:
-        raise NotFound('Json mal formado','33')
+        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNO_11_CONEXION_BD)       
     
     
     '''return "Materia agregarda. id={}".format(notamateria.notamateria_id)'''
@@ -87,17 +84,18 @@ def deleteNotaMateria(id):
 
 #Methods
 def setNotaMateria(request):
-    notamateria=NotaMateria(
-        request.json['alumno_id'],
-        request.json['nombremateria'],
-        request.json['notafinal'] 
-    )
+    try:   
+        notamateria=NotaMateria(
+            request.json['alumno_id'],
+            request.json['nombremateria'],
+            request.json['notafinal'] 
+        )
+    except Exception as identifier:
+        raise NotFound('Estructa de Json incorrecta',CodeInternalError.ERROR_INTERNO_10_JSON_BAD_FORMED)
     return notamateria
        
 
        
-
-
 def setMessajeFormatJson():
     return ({'detail':'Estructura json no soportada'},status.HTTP_400_BAD_REQUEST)
 #
