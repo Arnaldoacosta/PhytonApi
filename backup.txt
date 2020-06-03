@@ -1,0 +1,138 @@
+
+
+@app.route('/agregarmateria', methods=['POST'])
+def agregarNota():  
+    try:  
+        print(request.json)
+        nota=convertJsonToListNota(request.json)        
+        return usuario
+    except Exception as e:
+	    return(str(e))
+
+@app.route('/metodotestGet')
+def metodotestGet():
+    usuario  = request.args.get('email', None) 
+    nombremateria  = request.args.get('nombremateria', None)
+    nota  = request.args.get('nota', None)  
+    try:
+        nota=Notas(
+            id=usuario,
+            nombremateria=nombremateria,
+            nota=nota                               
+        )
+        nota.save()        
+        return usuario
+    except Exception as e:
+	    return(str(e))        
+
+
+@app.route('/buscarMateria/<int:id>')
+def buscarMateriasByAlumnoID(id):
+    try:      
+        nota=Notas.buscarMateriasByAlumnoID(id)       
+        return (convertToJsonNota(nota))
+    except Exception as e:
+	    return(str(e))
+
+
+
+''' Mostrar el listado de todas las materias de todos los alumnos'''
+'''
+@app.route('/mostrarMaterias')
+def mostrarMaterias():
+    try: 
+        notas = Notas.mostrarTodos()
+        results=[]
+        for nota in notas:
+                obj = {
+                    'id': nota.id,
+                    'usuario': nota.usuario,
+                    'nombremateria':nota.nombremateria                   
+                }
+                results.append(obj)       
+        response = jsonify(results)    
+        return response
+    except Exception as e:
+	    return(str(e))
+
+        '''
+
+'''Mostrar materias por el alumnoID'''
+'''
+@app.route('/mostrarmateria/<int:id>')
+def mostrarMateriasByID(id):
+    try: 
+        notas = Notas.buscarMateriasByAlumnoID(id)
+        results=[]
+        for nota in notas:
+                obj = {
+                    'id': nota.id,
+                    'usuario': nota.usuario,
+                    'nombremateria':nota.nombremateria                   
+                }
+                results.append(obj)                
+        return jsonify(results) 
+    except Exception as e:
+	    return(str(e))'''
+
+'''Funcion que recibe una lista tipo NOTA y la devuelve en formato JSON '''
+def convertToJsonNota(lista):
+    results=[]
+    for nota in lista:
+        obj = {
+                'id': nota.id,
+                'usuario': nota.usuario,
+                'nombremateria':nota.nombremateria                   
+                }
+        results.append(obj)                
+    return jsonify(results) 
+
+'''Funcion que recibe una lista JSON y devuelve la clase '''
+def convertJsonToListNota(request):
+    results=[]
+    for nota in lista:
+        obj = {
+                'id': nota.id,
+                'usuario': nota.usuario,
+                'nombremateria':nota.nombremateria                   
+                }
+        results.append(obj)                
+    return jsonify(results) 
+
+
+
+
+
+
+
+
+'' Mostrar el listado de todas las materias de todos los alumnos'''
+@app.route('/mostrarMaterias')
+def mostrarMaterias():
+    try: 
+        notas = Notas.mostrarTodos()
+        results=[]
+        for nota in notas:
+                obj = {
+                    'id': nota.id,
+                    'usuario': nota.usuario,
+                    'nombremateria':nota.nombremateria                   
+                }
+                results.append(obj)       
+        response = jsonify(results)    
+        return response
+    except Exception as e:
+	    return(str(e))
+
+
+@app.route('/EliminarMateria')
+def eliminarMateriaByAlumnoID():
+    try:    
+        email  = request.args.get('email', None) 
+        nombremateria  = request.args.get('nombremateria', None) 
+        nota=Notas.EliminarMateriaByAlumnoID(email,nombremateria)            
+        nota.delete()      
+        return ('eliminado')
+    except Exception as e:
+	    return(str(e))
+
