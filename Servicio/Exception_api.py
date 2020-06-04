@@ -38,5 +38,8 @@ class NotFound(ApiExceptionServ):
 class InternalServerError(ApiExceptionServ):
     message='Error interno.'
     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-    
+
+class BadResquest(ApiExceptionServ):
+    message='Recurso no encontrado.'
+    status_code=status.HTTP_400_BAD_REQUEST
 

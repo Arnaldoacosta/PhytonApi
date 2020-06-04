@@ -10,7 +10,7 @@ import requests
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:Ingreso87@localhost/Irso"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:Ingreso871@localhost/Irso"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -28,11 +28,11 @@ def updateNotaMateria():
     return (serv.updateNotaMateria(request))
 
 
-#Get all ---(Se usará en una posible futuro si crece la aplicacion)
+'''#Get all ---(Se usará en una posible futuro si crece la aplicacion)
 @app.route('/materias', methods=['GET'])
 def getNotasMaterias():  
     return (serv.getNotasMaterias())
-
+'''
 
 #GET subject for AlumnoID
 @app.route('/materias/<int:id>', methods=['GET'])
