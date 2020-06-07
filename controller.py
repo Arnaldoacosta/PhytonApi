@@ -28,11 +28,10 @@ def updateNotaMateria():
     return (serv.updateNotaMateria(request))
 
 
-'''#Get all ---(Se usará en una posible futuro si crece la aplicacion)
+#Get all ---(Se usará en una posible futuro si crece la aplicacion)
 @app.route('/materias', methods=['GET'])
 def getNotasMaterias():  
     return (serv.getNotasMaterias())
-'''
 
 #GET subject for AlumnoID
 @app.route('/materias/<int:id>', methods=['GET'])
@@ -65,5 +64,5 @@ def handle_invalid_usage(error):
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
