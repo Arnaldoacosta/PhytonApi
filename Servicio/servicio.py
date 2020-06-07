@@ -16,7 +16,7 @@ def addNotaMateria(request):
         content = {'detalle': 'Recurso creado.'}
         return content, status.HTTP_201_CREATED 
     except Exception as identifier:
-        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNO_11_CONEXION_BD)       
+        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNAL_11_CONEXION_BD)       
     
     
     '''return "Materia agregarda. id={}".format(notamateria.notamateria_id)'''
@@ -26,12 +26,12 @@ def findNotasMateriasByAlumnoID(id):
     try:
         obj=NotaMateria.getNotasMateriasByAlumnoID(id)
     except Exception as identifier:
-        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNO_11_CONEXION_BD)          
+        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNAL_11_CONEXION_BD)          
     if obj is not None and len(obj)!=0:
         json_Str=jsonify([e.serializar() for e in obj]) 
         return json_Str
     else:
-        raise BadResquest('Recurso no encontrado en la base de datos.',CodeInternalError.ERROR_INTERNO_12_REQUEST_NOT_FOUND)
+        raise BadResquest('Recurso no encontrado en la base de datos.',CodeInternalError.ERROR_INTERNAL_12_REQUEST_NOT_FOUND)
             
 
 # Get all NotasMaterias
@@ -41,25 +41,37 @@ def getNotasMaterias():
     return json_Str
 
 #Update
-def updateNotaMateria(request):
-    #raise PermissionDenied()
-    try:      
-        notamateria_id=request.json['notamateria_id']
-        ''' alumno_id=request.json['alumno_id']'''
+def updateNotaMateria(request): 
+    try:
+        notamateriaID=request.json['notamateria_id']
         nombremateria=request.json['nombremateria']
-        notafinal=request.json['notafinal']  
-    except Exception as e:
-        return ({'detail':'Json mal formado'},status.HTTP_400_BAD_REQUEST)     
-    notamateria=NotaMateria.buscarNotaMateriaByNotamateriaID(notamateria_id)
+        notafinal=request.json['notafinal']
+        alumnoID=request.json['alumno_id']
+    except Exception as identifier:
+        raise BadResquest('Estructa de Json incorrecta',CodeInternalError.ERROR_INTERNAL_10_JSON_BAD_FORMED) 
+    #se valida el nro de la nota
+    if (int(notafinal)>=11 or int(notafinal)<0):
+            raise BadResquest('Nota invalida',CodeInternalError.ERROR_INTERNAL_10_JSON_BAD_FORMED)
+        #Se valida si la notamateriaID recibida corresponde al alumno en cuestión. Valida si el user no existe.
+    notamateria=NotaMateria.buscarNotaMateriaByNotamateriaID(notamateriaID)
     if notamateria is None:
-        content = {'detail': 'Recurso no encontrado'}
-        return content, status.HTTP_404_NOT_FOUND
-    else:          
-        notamateria.nombremateria=nombremateria,
-        notamateria.notafinal=notafinal
-        notamateria.save()
-        return ('Registro editado.')
-
+        raise BadResquest('Los datos recibidos no coinciden.',CodeInternalError.ERROR_INTERNAL_13_REQUEST_DATA_NOT_MATCHED)
+    if (int(alumnoID)==int(notamateria.alumno_fk)):
+        try:
+            notamateria.nombremateria=nombremateria
+            notamateria.notafinal=notafinal
+            '''print(notamateria.nombremateria)
+            print(notamateria.notafinal)
+            print(notamateria.alumno_fk)
+            print(notamateria.notamateria_id)'''
+            notamateria.save()
+            return ('Recurso actualizado.')
+        except Exception as identifier:
+            raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNAL_11_CONEXION_BD)       
+    else:
+        raise BadResquest('Los datos recibidos no coinciden.',CodeInternalError.ERROR_INTERNAL_13_REQUEST_DATA_NOT_MATCHED) 
+        
+    
 # Update
 def updateNotaMateriasByAlumnoID(id):
     try:      
@@ -68,21 +80,21 @@ def updateNotaMateriasByAlumnoID(id):
         return (json_str)
     except Exception as e:
 	    return(str(e))
-
+ 
 #
 def deleteNotaMateria(id):
     try:
         notamateria=NotaMateria.buscarNotaMateriaByNotamateriaID(id)
     except Exception as identifier:
-        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNO_11_CONEXION_BD)          
+        raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNAL_11_CONEXION_BD)          
     if notamateria is not None:
         try:
             notamateria.delete()
             return ('Recurso eliminado.',status.HTTP_200_OK)
         except Exception as identifier:
-            raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNO_11_CONEXION_BD)   
+            raise InternalServerError('Error relacionado con base de datos.', CodeInternalError.ERROR_INTERNAL_11_CONEXION_BD)   
     else:
-        raise BadResquest('Recurso no encontrado en la base de datos.',CodeInternalError.ERROR_INTERNO_12_REQUEST_NOT_FOUND)  
+        raise BadResquest('Recurso no encontrado en la base de datos.',CodeInternalError.ERROR_INTERNAL_12_REQUEST_NOT_FOUND)  
      
 
 #Methods
@@ -94,7 +106,7 @@ def setNotaMateria(request):
             request.json['notafinal'] 
         )
     except Exception as identifier:
-        raise BadResquest('Estructa de Json incorrecta',CodeInternalError.ERROR_INTERNO_10_JSON_BAD_FORMED)
+        raise BadResquest('Estructa de Json incorrecta',CodeInternalError.ERROR_INTERNAL_10_JSON_BAD_FORMED)
     return notamateria
        
 

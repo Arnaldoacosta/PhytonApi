@@ -28,7 +28,6 @@ class NotaMateria(db.Model):
             #NotaMateria.query(func.count(User.id))
         return NotaMateria.query.order_by(NotaMateria.alumno_fk).all() 
 
-
     @staticmethod
     def buscarNotaMateriaByNotamateriaID(notamateria_id):
         return NotaMateria.query.filter_by(notamateria_id=notamateria_id).first()
