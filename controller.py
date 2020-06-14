@@ -7,11 +7,25 @@ from flask_api import status
 from Servicio.Exception_api import ApiExceptionServ
 from Servicio.Exception_api import NotFound
 import requests
+import os
+from config import Production
 
-app = Flask(__name__)
+#app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:Ingreso871@localhost/Irso"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Production)
+    return app
+
+app = create_app()
+
+#app.config.from_object(os.environ['APP_SETTINGS'])
+#app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:Ingreso871@localhost/Irso"
+#app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://rmnyfgzfbjbygy:4843aa6bd5f1683b39b934750c6b4475b311e244179a3ca4033fff37896029c4@ec2-34-232-147-86.compute-1.amazonaws.com/da384a5ispvhh0"
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config.from_object(config[env_name])
+
 
 db = SQLAlchemy(app)
 
@@ -28,10 +42,11 @@ def updateNotaMateria():
     return (serv.updateNotaMateria(request))
 
 
-#Get all ---(Se usará en una posible futuro si crece la aplicacion)
+'''#Get all ---(Se usará en una posible futuro si crece la aplicacion)
 @app.route('/materias', methods=['GET'])
 def getNotasMaterias():  
     return (serv.getNotasMaterias())
+'''
 
 #GET subject for AlumnoID
 @app.route('/materias/<int:id>', methods=['GET'])
@@ -47,7 +62,10 @@ def deleteNotaMateria(id):
 
 @app.route("/test")
 def imprimirJson():
-    return "Api taller VI!"
+    variable_test= os.environ.get('HOME')
+    print(os.getcwd())
+    print(variable_test)
+    return 'yes base de datos'
 
 @app.route("/TestapiExterna")
 def testApiExterna():
@@ -64,5 +82,5 @@ def handle_invalid_usage(error):
     return response
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 
